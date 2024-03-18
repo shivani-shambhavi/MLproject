@@ -3,133 +3,153 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Spam Classifier</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>Calendar</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(45deg, #f6d365, #fda085);
-            color: black;
-            padding-top: 20px;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #667eea, #764ba2);
         }
 
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .navbar {
-            background-color: #ff69b4;
-        }
-
-        .navbar-brand {
-            color: black;
-        }
-
-        h2 {
-            text-align: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        form {
-            margin-top: 20px;
+            max-width: 600px;
+            margin: 20px auto;
             padding: 20px;
-            border-radius: 5px;
             background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        textarea {
-            resize: none;
+        label {
+            margin-right: 10px;
+            color: #333;
+        }
+
+        select,
+        input[type="number"],
+        button {
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+            color: #333;
         }
 
         button {
-            margin-top: 10px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
         }
 
         button:hover {
-            background-color: #007bff;
+            background-color: #0056b3;
         }
 
-        /* Gradient Text Color */
-        .gradient-text {
-            background: linear-gradient(45deg, #f6d365, #fda085);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #343a40;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            left: 0;
+        table {
             width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            color: #333;
         }
 
-        .footer-description {
-            margin: 0;
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
         }
 
-        .btn-go-back {
-            display: block;
-            margin: 0 auto;
-            width: 150px;
+        th {
+            background-color: #f2f2f2;
         }
 
-        .gif {
-            max-width: 100%;
-            height: 150px;
-            margin-bottom: 20px;
-        }
-
-        .danger {
-            color: #dc3545;
-        }
-
-        .safe {
-            color: #28a745;
-        }
-
-        .made-by {
-            color: white;
-            padding: 2px 5px;
-            margin-bottom: 20px;
+        td {
+            height: 50px;
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
+
     <div class="container">
-        <nav class="navbar navbar-dark bg-pink">
-            <div class="container-fluid">
-                <a class="navbar-brand text-dark" href="#">Email Spam Classifier</a>
-                <a class="navbar-brand text-dark" href="#">Created by **SHIVANI SHAMBAVI**</a>
-            </div>
-        </nav>
+        <label for="month">Month:</label>
+        <select id="month">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+        </select>
+        <label for="year">Year:</label>
+        <input type="number" id="year" min="1900" max="2100" step="1" value="2024">
+        <button onclick="generateCalendar()">Generate Calendar</button>
     </div>
 
-    <!-- Input form -->
-    <div class="container">
-        <h2>Type an Email here to check if it is Spam or Ham</h2>
-        <form action="/" method="POST">
-            <div class="form-floating">
-                <textarea class="form-control" placeholder="Write your mail here.." id="email" name="email"
-                    style="height: 100px"></textarea>
-                <label for="email">Write your email here...</label>
-                <button class="w-100 btn btn-lg btn-primary">Submit</button>
-            </div>
-        </form>
-    </div>
+    <div id="calendar-container" class="container"></div>
+
+    <script>
+        function generateCalendar() {
+            const month = parseInt(document.getElementById('month').value);
+            const year = parseInt(document.getElementById('year').value);
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = '';
+
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th colspan="7">${new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' })}</th>
+                    </tr>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody id="calendar-body">
+                </tbody>
+            `;
+
+            const calendarBody = table.querySelector('#calendar-body');
+
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < new Date(year, month).getDay()) {
+                        row.innerHTML += '<td></td>';
+                    } else if (date <= daysInMonth) {
+                        row.innerHTML += `<td>${date}</td>`;
+                        date++;
+                    } else {
+                        row.innerHTML += '<td></td>';
+                    }
+                }
+                calendarBody.appendChild(row);
+            }
+
+            container.appendChild(table);
+        }
+
+        generateCalendar();
+    </script>
 
 </body>
 
